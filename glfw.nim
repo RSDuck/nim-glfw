@@ -22,7 +22,13 @@ export wrapper.MouseButton
 export wrapper.mbLeft
 export wrapper.mbRight
 export wrapper.mbMiddle
-export wrapper.ModifierKey
+#export wrapper.ModifierKey
+type
+  ModifierKey* = enum
+    mkShift = "shift"
+    mkCtrl ="ctrl"
+    mkAlt = "alt"
+    mkSuper = "super"
 export wrapper.Key
 export wrapper.KeyAction
 export wrapper.OpenglProfile
@@ -115,11 +121,12 @@ converter toHandle(w: Window): WindowHandle = w.handle
 proc initModifierKeySet(bitfield: int): set[ModifierKey] =
   # XXX: This should not be necessary just because the enum type has
   # non-consecutive elements.
-  let mods = [ModifierKey.mkShift, ModifierKey.mkCtrl, ModifierKey.mkAlt, ModifierKey.mkSuper]
-  for m in mods:
+  let mods = [wrapper.ModifierKey.mkShift, wrapper.ModifierKey.mkCtrl, 
+    wrapper.ModifierKey.mkAlt, wrapper.ModifierKey.mkSuper]
+  for i, m in pairs mods:
     let bit = (bitfield.int and m.int)
     if bit != 0:
-      result.incl(bit.ModifierKey)
+      result.incl(ModifierKey i)
 
 type
   ErrorType* {.size: int32.sizeof.} = enum
